@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import { Bell } from "lucide-react";
+import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import { Logo } from "@/components/brand/logo";
-import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export interface SiteHeaderProps extends React.HTMLAttributes<HTMLElement> {
@@ -55,22 +56,38 @@ export function SiteHeader({ activeHref, className, ...props }: SiteHeaderProps)
       </div>
 
       <div className="flex items-center gap-3 sm:gap-4">
-        <button
-          type="button"
-          aria-label="Notifications"
-          className="w-10 h-10 flex items-center justify-center rounded-full text-neutral-700 hover:text-neutral-900 hover:bg-neutral-200/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-        >
-          <Bell className="w-5 h-5 stroke-[1.75]" aria-hidden="true" />
-        </button>
+        <Show when="signed-out">
+          <SignInButton mode="modal">
+            <Button variant="tertiary" size="md">
+              Sign In
+            </Button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <Button variant="primary" size="md">
+              Sign Up
+            </Button>
+          </SignUpButton>
+        </Show>
 
-        <Link
-          href="/profile"
-          className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-          aria-label="User profile"
-        >
-          <Avatar size="lg" fallback="M" />
-        </Link>
+        <Show when="signed-in">
+          <button
+            type="button"
+            aria-label="Notifications"
+            className="w-10 h-10 flex items-center justify-center rounded-full text-neutral-700 hover:text-neutral-900 hover:bg-neutral-200/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+          >
+            <Bell className="w-5 h-5 stroke-[1.75]" aria-hidden="true" />
+          </button>
+
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: "w-10 h-10 rounded-full",
+              },
+            }}
+          />
+        </Show>
       </div>
     </header>
   );
 }
+
